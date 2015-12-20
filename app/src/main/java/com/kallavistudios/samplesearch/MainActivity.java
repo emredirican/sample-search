@@ -39,6 +39,7 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int RESULT_LIMIT = 100;
     @Bind(R.id.sv_main)
     SearchView searchView;
     @Bind(R.id.lv_main)
@@ -138,6 +139,9 @@ public class MainActivity extends AppCompatActivity {
             String suggestion = suggestions.get(i).replace("'", "");
             if (suggestion.startsWith(query)) {
                 result.add(suggestions.get(i));
+                if(result.size() >= RESULT_LIMIT){
+                    break;
+                }
             }
         }
         suggestionsAdapter.addAll(result);
@@ -152,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void search(String keyword) {
-        Toast.makeText(this, keyword, Toast.LENGTH_SHORT).show();
         searchService.search(getString(R.string.apikey), getString(R.string.seId), "items(title,link,snippet)", false, keyword)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -167,9 +170,12 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(SearchResult s) {
-                        Timber.d(s.toString());
-                        adapter.setItems(s.getItems());
+                    public void onNext(SearchResult searchResult) {
+                        Timber.d(searchResult.toString());
+                        if (searchResult.getItems().isEmpty()) {
+                            Toast.makeText(activityContext, getString(R.string.no_result_found), Toast.LENGTH_SHORT).show();
+                        }
+                        adapter.setItems(searchResult.getItems());
                     }
                 });
     }

@@ -4,4 +4,5 @@
     <string name="hint_search_box">Search</string>
     <string name="apikey">AIzaSyAcxmOsEwVSopAQ92b3VBE7HzsSJeU2FAE</string>
     <string name="seId">001204316210792010749:dsaoqvesxzi</string>
+    <string name="no_result_found">Could not find a match</string>
 </resources>
